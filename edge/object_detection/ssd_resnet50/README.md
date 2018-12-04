@@ -27,10 +27,11 @@ $ sudo apt install libblas-dev liblapack-dev
 
 ### Install Python, pip, SciPy and CK
 ```bash
-$ sudo apt install python3 python3-pip
+$ sudo apt install python3 python3-pip python3-tk
 $ sudo python3 -m pip install --upgrade pip
 $ sudo python3 -m pip install scipy
 $ sudo python3 -m pip install ck
+$ sudo python3 -m pip install cython
 ```
 **NB:** CK also supports Python 2.
 
@@ -50,5 +51,4 @@ $ ck install package:dataset-coco-2014
 ### Install the SSD-MobileNet-v1 model
 ```bash
 $ ck install package:tensorflowmodel-object-detection-ssd-resnet50-v1-fpn-sbp-640x640-coco
-$ ck install package:tensorflowmodel-api
 ```
