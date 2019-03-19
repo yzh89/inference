@@ -128,7 +128,7 @@ def train_mlperf_coco(args):
     use_cuda = not args.no_cuda and tf.test.is_gpu_available(cuda_only=True)
     ssd_r34 = SSD_R34(81,strides=args.strides)
     #img_size=[args.image_size,args.image_size]
-    dboxes = dboxes_coco(args.image_size,args.strides)
+    dboxes = dboxes_R34_coco(args.image_size,args.strides)
     encoder = Encoder(dboxes)
     train_trans = SSDTransformer(dboxes, tuple(args.image_size), val=False)
     val_trans = SSDTransformer(dboxes, tuple(args.image_size), val=True)
