@@ -40,7 +40,6 @@ from object_detection import faster_rcnn_box_coder
 # from tensorflow.contrib.tpu.python.tpu import tpu_estimator
 # from tensorflow.contrib.tpu.python.tpu import tpu_optimizer
 from tensorflow.python.estimator import model_fn as model_fn_lib
-from tensorflow.
 
 from mlperf_compliance import mlperf_log
 import dataloader
@@ -402,6 +401,9 @@ def _model_fn(features, labels, mode, params, model):
     else:
       with tf.control_dependencies(update_ops):
         train_op = optimizer.minimize(total_loss, global_step)
+        return model_fn_lib.EstimatorSpec(
+            mode=mode, loss=total_loss, train_op=train_op, scaffold=scaffold_fn())
+
 '''
 # TPU code
 
@@ -466,8 +468,15 @@ def _model_fn(features, labels, mode, params, model):
     train_op = None
 
   eval_metrics = None
-  if mode == tf.estimator.ModeKeys.EVAL:
-    raise NotImplementedError
+
+  raise NotImplementedError
+
+"""
+# TPU code
+#
+
+ if mode == tf.estimator.ModeKeys.EVAL:
+   raise NotImplementedError
 
   return estimator.TPUEstimatorSpec(
       mode=mode,
@@ -476,7 +485,7 @@ def _model_fn(features, labels, mode, params, model):
       host_call=host_call,
       eval_metrics=eval_metrics,
       scaffold_fn=scaffold_fn)
-
+"""
 
 def ssd_model_fn(features, labels, mode, params):
   """SSD model."""
@@ -489,6 +498,7 @@ def default_hparams():
 
       # TODO(taylorrobie): I don't respect this everywhere.
       # enable bfloat
+      # TODO(yzh89): HParams update for CPU/CUDA
       use_bfloat16=True,
       use_host_call=True,
       num_examples_per_epoch=120000,
