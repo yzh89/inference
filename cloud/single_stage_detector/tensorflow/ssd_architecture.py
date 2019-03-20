@@ -12,6 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
+"""
+Code based up on https://github.com/mlperf/results/blob/master/v0.5.0/google/cloud_v3.8/ssd-tpuv3-8/code/ssd/model/staging/models/rough/ssd/ssd_architecture.py
+ssd architecture adjusted to match ../pytorch/ssd_r34.py
+
+Strides for last conv2d is 2 instead of default
+"""
+
 """SSD (via ResNet50) model definition.
 
 Defines the SSD model and loss functions from this paper:
@@ -27,12 +34,16 @@ from __future__ import print_function
 
 import tensorflow as tf
 
-from tensorflow.contrib.tpu.python.ops import tpu_ops
+# TPU related 
+# from tensorflow.contrib.tpu.python.ops import tpu_ops
+
 from tensorflow.python.ops import math_ops
 from tensorflow.python.training import moving_averages
 from mlperf_compliance import mlperf_log
 import ssd_constants
 
+'''
+# TPU Related
 
 def cross_replica_average(inputs, num_shards=None, num_shards_per_group=None):
   """Customized cross replica sum op."""
@@ -58,7 +69,7 @@ def distributed_batch_norm(inputs,
                            is_training=True,
                            gamma_initializer=None,
                            num_shards=None,
-                           distributed_group_size=4,
+                           distributed_group_size=1, #4 TPU->1 CUDA
                            scope=None):
   """Adds a Batch Normalization layer from http://arxiv.org/abs/1502.03167.
 
@@ -193,7 +204,7 @@ def distributed_batch_norm(inputs,
 
     outputs.set_shape(inputs_shape)
     return outputs
-
+'''
 
 def batch_norm_relu(inputs,
                     is_training_bn,
@@ -230,6 +241,9 @@ def batch_norm_relu(inputs,
     axis = 3
 
   if params['distributed_group_size'] > 1:
+""" 
+#  TPU
+#
     inputs = distributed_batch_norm(
         inputs=inputs,
         decay=ssd_constants.BATCH_NORM_DECAY,
@@ -238,6 +252,8 @@ def batch_norm_relu(inputs,
         gamma_initializer=gamma_initializer,
         num_shards=params['num_shards'],
         distributed_group_size=params['distributed_group_size'])
+"""
+    raise NotImplementedError
   else:
     inputs = tf.layers.batch_normalization(
         inputs=inputs,
@@ -630,6 +646,7 @@ def ssd(features, params, is_training_bn=False):
     feats[7] = tf.layers.conv2d(
         feats[7],
         filters=256,
+        strides=(2, 2),
         kernel_size=(3, 3),
         padding='valid',
         activation=tf.nn.relu,
