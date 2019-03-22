@@ -558,6 +558,7 @@ def class_net(images, level, num_classes):
       images,
       num_classes * ssd_constants.NUM_DEFAULTS_BY_LEVEL[level],
       kernel_size=(3, 3),
+      strides=(3, 3),
       padding='same',
       activation=None,
       name='class-%d' % (level),
@@ -570,6 +571,7 @@ def box_net(images, level):
       images,
       4 * ssd_constants.NUM_DEFAULTS_BY_LEVEL[level],
       kernel_size=(3, 3),
+      strides=(3, 3),
       padding='same',
       activation=None,
       name='box-%d' % (level),
@@ -598,8 +600,8 @@ def ssd(features, params, is_training_bn=False):
     feats[4] = tf.layers.conv2d(
         feats[4],
         filters=512,
-        strides=(2, 2),
         kernel_size=(3, 3),
+        strides=(2, 2),
         padding='same',
         activation=tf.nn.relu,
         name='block7-conv3x3')
@@ -614,8 +616,8 @@ def ssd(features, params, is_training_bn=False):
     feats[5] = tf.layers.conv2d(
         feats[5],
         filters=512,
-        strides=(2, 2),
         kernel_size=(3, 3),
+        strides=(2, 2),
         padding='same',
         activation=tf.nn.relu,
         name='block8-conv3x3')
@@ -630,8 +632,8 @@ def ssd(features, params, is_training_bn=False):
     feats[6] = tf.layers.conv2d(
         feats[6],
         filters=256,
-        strides=(2, 2),
         kernel_size=(3, 3),
+        strides=(2, 2),
         padding='same',
         activation=tf.nn.relu,
         name='block9-conv3x3')
@@ -646,8 +648,8 @@ def ssd(features, params, is_training_bn=False):
     feats[7] = tf.layers.conv2d(
         feats[7],
         filters=256,
-        strides=(2, 2),
         kernel_size=(3, 3),
+        strides=(2, 2),
         padding='valid',
         activation=tf.nn.relu,
         name='block10-conv3x3')
