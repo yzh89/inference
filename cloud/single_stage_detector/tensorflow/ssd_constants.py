@@ -16,12 +16,10 @@
 # Code based up on https://github.com/mlperf/results/blob/master/v0.5.0/google/cloud_v3.8/ssd-tpuv3-8/code/ssd/model/staging/models/rough/ssd/ssd_constants.py
 # TPU content is commented out for debugging and simplicity
 """
-
 """Central location for all constants related to MLPerf SSD."""
-
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+# from __future__ import absolute_import
+# from __future__ import division
+# from __future__ import print_function
 
 # ==============================================================================
 # == Model =====================================================================
@@ -120,4 +118,4 @@ DUMMY_SCORE = -1e5  # If no boxes are matched.
 # Eval step intervals starting from 0
 EVAL_STEPS = (120000, 40000, 20000, 20000, 20000, 20000)
 # Target COCO/AP for mlperf.
-EVAL_TARGET = 0.212
+EVAL_TARGET = 0.19

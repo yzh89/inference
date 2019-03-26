@@ -26,9 +26,9 @@ procedure.
 T.-Y. Lin, P. Goyal, R. Girshick, K. He, and P. Dollar
 Focal Loss for Dense Object Detection. arXiv:1708.02002
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+# from __future__ import absolute_import
+# from __future__ import division
+# from __future__ import print_function
 
 import tensorflow as tf
 
@@ -403,6 +403,7 @@ def _model_fn(features, labels, mode, params, model):
         train_op = optimizer.minimize(total_loss, global_step)
         return model_fn_lib.EstimatorSpec(
             mode=mode, loss=total_loss, train_op=train_op, scaffold=scaffold_fn())
+  raise NotImplementedError
 
 '''
 # TPU code
@@ -463,20 +464,14 @@ def _model_fn(features, labels, mode, params, model):
       host_call = (host_call_fn,
                    [global_step_t, total_loss_t, cls_loss_t, box_loss_t,
                     learning_rate_t])
-'''
+
   else:
     train_op = None
 
   eval_metrics = None
 
-  raise NotImplementedError
-
-"""
-# TPU code
-#
-
- if mode == tf.estimator.ModeKeys.EVAL:
-   raise NotImplementedError
+  if mode == tf.estimator.ModeKeys.EVAL:
+    raise NotImplementedError
 
   return estimator.TPUEstimatorSpec(
       mode=mode,
@@ -485,7 +480,7 @@ def _model_fn(features, labels, mode, params, model):
       host_call=host_call,
       eval_metrics=eval_metrics,
       scaffold_fn=scaffold_fn)
-"""
+'''
 
 def ssd_model_fn(features, labels, mode, params):
   """SSD model."""
@@ -499,9 +494,9 @@ def default_hparams():
       # TODO(taylorrobie): I don't respect this everywhere.
       # enable bfloat
       # TODO(yzh89): HParams update for CPU/CUDA
-      use_bfloat16=True,
+      use_bfloat16=False,
       use_host_call=True,
-      num_examples_per_epoch=120000,
+      num_examples_per_epoch=800,
       lr_warmup_epoch=1.0,
       first_lr_drop_epoch=42.6,
       second_lr_drop_epoch=53.3,
@@ -511,6 +506,6 @@ def default_hparams():
       distributed_group_size=1,
       eval_every_checkpoint=False,
       transpose_input=True,
-      train_with_low_level_api=True,
-      eval_with_low_level_api=True,
+      train_with_low_level_api=False,
+      eval_with_low_level_api=False,
 )

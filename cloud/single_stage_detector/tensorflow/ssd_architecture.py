@@ -28,9 +28,9 @@ https://arxiv.org/pdf/1708.02002
 Uses the ResNet model as a basis.
 """
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+# from __future__ import absolute_import
+# from __future__ import division
+# from __future__ import print_function
 
 import tensorflow as tf
 
@@ -241,9 +241,11 @@ def batch_norm_relu(inputs,
     axis = 3
 
   if params['distributed_group_size'] > 1:
-""" 
-#  TPU
-#
+    raise NotImplementedError
+
+    """ 
+    #  TPU
+    #
     inputs = distributed_batch_norm(
         inputs=inputs,
         decay=ssd_constants.BATCH_NORM_DECAY,
@@ -252,8 +254,7 @@ def batch_norm_relu(inputs,
         gamma_initializer=gamma_initializer,
         num_shards=params['num_shards'],
         distributed_group_size=params['distributed_group_size'])
-"""
-    raise NotImplementedError
+    """
   else:
     inputs = tf.layers.batch_normalization(
         inputs=inputs,
