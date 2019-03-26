@@ -41,7 +41,7 @@ CLASS_INV_MAP = (
 _MAP = {j: i for i, j in enumerate(CLASS_INV_MAP)}
 CLASS_MAP = tuple(_MAP.get(i, -1) for i in range(max(CLASS_INV_MAP) + 1))
 
-NUM_SSD_BOXES = 8732
+NUM_SSD_BOXES = 15130 #8732
 
 RESNET_DEPTH = 34
 
