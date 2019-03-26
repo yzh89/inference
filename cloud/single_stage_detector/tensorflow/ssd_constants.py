@@ -15,7 +15,6 @@
 """
 # Code based up on https://github.com/mlperf/results/blob/master/v0.5.0/google/cloud_v3.8/ssd-tpuv3-8/code/ssd/model/staging/models/rough/ssd/ssd_constants.py
 # TPU content is commented out for debugging and simplicity
-# TODO update image size
 """
 
 """Central location for all constants related to MLPerf SSD."""
@@ -27,7 +26,7 @@ from __future__ import print_function
 # ==============================================================================
 # == Model =====================================================================
 # ==============================================================================
-IMAGE_SIZE = 300
+IMAGE_SIZE = 1200
 
 # TODO(taylorrobie): MLPerf uses 80, but COCO documents 90. (RetinaNet uses 90)
 # Update(taylorrobie): Labels > 81 show up in the pipeline. This will need to
@@ -52,11 +51,15 @@ RESNET_DEPTH = 34
 MIN_LEVEL = 3
 MAX_LEVEL = 8
 
-FEATURE_SIZES = (38, 19, 10, 5, 3, 1)
+#300x300 -> 1200x1200 scaling FEATURE_SIZES = (38, 19, 10, 5, 3, 1)
+FEATURE_SIZES = (50, 25, 13, 7, 3, 3)
 STEPS = (8, 16, 32, 64, 100, 300)
 
 # https://github.com/amdegroot/ssd.pytorch/blob/master/data/config.py
-SCALES = (21, 45, 99, 153, 207, 261, 315)
+# scale up 4 times from 300
+# SCALES = (21, 45, 99, 153, 207, 261, 315)
+SCALES = (84, 180, 396, 612, 828, 1044, 1260)
+
 ASPECT_RATIOS = ((2,), (2, 3), (2, 3), (2, 3), (2,), (2,))
 NUM_DEFAULTS = (4, 6, 6, 6, 4, 4)
 NUM_DEFAULTS_BY_LEVEL = {3: 4, 4: 6, 5: 6, 6: 6, 7: 4, 8: 4}
