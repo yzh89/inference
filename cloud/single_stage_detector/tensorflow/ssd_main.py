@@ -24,9 +24,9 @@ import threading
 import numpy as np
 import tensorflow as tf
 
-from tensorflow.contrib.tpu.python.tpu import tpu_config
-from tensorflow.contrib.tpu.python.tpu import tpu_estimator
-from tensorflow.contrib.training.python.training import evaluation
+# from tensorflow.contrib.tpu.python.tpu import tpu_config
+# from tensorflow.contrib.tpu.python.tpu import tpu_estimator
+# from tensorflow.contrib.training.python.training import evaluation
 
 from mlperf_compliance import mlperf_log
 #import async_checkpoint
@@ -38,40 +38,40 @@ import ssd_model
 # import train_low_level_runner
 
 # Cloud TPU Cluster Resolvers
-tf.flags.DEFINE_string(
-    'gcp_project', default=None,
-    help='Project name for the Cloud TPU-enabled project. If not specified, we '
-    'will attempt to automatically detect the GCE project from metadata.')
-tf.flags.DEFINE_string(
-    'tpu_zone', default=None,
-    help='GCE zone where the Cloud TPU is located in. If not specified, we '
-    'will attempt to automatically detect the GCE project from metadata.')
-tf.flags.DEFINE_string(
-    'tpu_name', default=None,
-    help='Name of the Cloud TPU for Cluster Resolvers. You must specify either '
-    'this flag or --master.')
+# tf.flags.DEFINE_string(
+#     'gcp_project', default=None,
+#     help='Project name for the Cloud TPU-enabled project. If not specified, we '
+#     'will attempt to automatically detect the GCE project from metadata.')
+# tf.flags.DEFINE_string(
+#     'tpu_zone', default=None,
+#     help='GCE zone where the Cloud TPU is located in. If not specified, we '
+#     'will attempt to automatically detect the GCE project from metadata.')
+# tf.flags.DEFINE_string(
+#     'tpu_name', default=None,
+#     help='Name of the Cloud TPU for Cluster Resolvers. You must specify either '
+#     'this flag or --master.')
 
-tf.flags.DEFINE_string(
-    'eval_master', default='',
-    help='GRPC URL of the eval master. Set to an appropiate value when running '
-    'on CPU/GPU')
-tf.flags.DEFINE_bool('use_tpu', True, 'Use TPUs rather than CPUs')
+# tf.flags.DEFINE_string(
+#     'eval_master', default='',
+#     help='GRPC URL of the eval master. Set to an appropiate value when running '
+#     'on CPU/GPU')
+# tf.flags.DEFINE_bool('use_tpu', True, 'Use TPUs rather than CPUs')
 tf.flags.DEFINE_string('model_dir', None, 'Location of model_dir')
 tf.flags.DEFINE_string('resnet_checkpoint', '',
                        'Location of the ResNet checkpoint to use for model '
                        'initialization.')
 tf.flags.DEFINE_string('hparams', '',
                        'Comma separated k=v pairs of hyperparameters.')
-tf.flags.DEFINE_integer(
-    'num_shards', default=8, help='Number of shards (TPU cores) for '
-    'training.')
-tf.flags.DEFINE_integer(
-    'num_shards_per_host',
-    default=8,
-    help='Number of shards (TPU cores) for '
-    'training per host.')
-tf.flags.DEFINE_integer(
-    'eval_num_shards', default=8, help='Number of shards (TPU cores) for eval')
+# tf.flags.DEFINE_integer(
+#     'num_shards', default=8, help='Number of shards (TPU cores) for '
+#     'training.')
+# tf.flags.DEFINE_integer(
+#     'num_shards_per_host',
+#     default=8,
+#     help='Number of shards (TPU cores) for '
+#     'training per host.')
+# tf.flags.DEFINE_integer(
+#     'eval_num_shards', default=8, help='Number of shards (TPU cores) for eval')
 tf.flags.DEFINE_integer('train_batch_size', 64, 'training batch size')
 tf.flags.DEFINE_integer('eval_batch_size', 1, 'evaluation batch size')
 tf.flags.DEFINE_integer('eval_samples', 5000, 'The number of samples for '
@@ -108,8 +108,8 @@ tf.flags.DEFINE_integer('min_eval_interval', 180,
 tf.flags.DEFINE_integer(
     'eval_timeout', None,
     'Maximum seconds between checkpoints before evaluation terminates.')
-tf.flags.DEFINE_string('device', 'tpu', 'device to train (default: tpu)')
-tf.flags.DEFINE_bool('use_async_checkpoint', False, 'Use async checkpoint')
+tf.flags.DEFINE_string('device', 'gpu', 'device to train (default: gpu)')
+# tf.flags.DEFINE_bool('use_async_checkpoint', False, 'Use async checkpoint')
 tf.flags.DEFINE_integer('eval_epoch', 0, 'Epoch to eval.')
 
 FLAGS = tf.flags.FLAGS
@@ -155,16 +155,17 @@ def construct_run_config(iterations_per_loop):
   tpu_cluster_resolver = None
   run_local = FLAGS.device == 'gpu'  # cpu will be run on the TPU host
   # controller CPU, not the local CPU
-  if FLAGS.use_tpu and run_local:
-    raise RuntimeError('--use_tpu should be set to False if --device is set '
-                       'to "gpu"')
+  
+  # if FLAGS.use_tpu and run_local:
+  #   raise RuntimeError('--use_tpu should be set to False if --device is set '
+  #                      'to "gpu"')
 
-  # Check device
-  if FLAGS.use_tpu and FLAGS.device != 'tpu':
-    raise RuntimeError("--device must be 'tpu' when --use_tpu=True.")
-  if not FLAGS.use_tpu and FLAGS.device == 'tpu':
-    raise RuntimeError("--device must be either 'gpu' or 'cpu' "
-                       'when --use_tpu=False.')
+  # # Check device
+  # if FLAGS.use_tpu and FLAGS.device != 'tpu':
+  #   raise RuntimeError("--device must be 'tpu' when --use_tpu=True.")
+  # if not FLAGS.use_tpu and FLAGS.device == 'tpu':
+  #   raise RuntimeError("--device must be either 'gpu' or 'cpu' "
+  #                      'when --use_tpu=False.')
 
   # Parse hparams
   hparams = ssd_model.default_hparams()
@@ -172,9 +173,9 @@ def construct_run_config(iterations_per_loop):
 
   params = dict(
       hparams.values(),
-      num_shards=FLAGS.num_shards,
+      # num_shards=FLAGS.num_shards,
       num_examples_per_epoch=FLAGS.num_examples_per_epoch,
-      use_tpu=FLAGS.use_tpu,
+      # use_tpu=FLAGS.use_tpu,
       resnet_checkpoint=FLAGS.resnet_checkpoint,
       val_json_file=FLAGS.val_json_file,
       mode=FLAGS.mode,
@@ -184,6 +185,9 @@ def construct_run_config(iterations_per_loop):
       steps_per_epoch=FLAGS.num_examples_per_epoch // FLAGS.train_batch_size,
   )
 
+  '''
+  # TPU code
+  
   if FLAGS.tpu_name:
     tpu_cluster_resolver = (
         tf.contrib.cluster_resolver.TPUClusterResolver(
@@ -197,10 +201,9 @@ def construct_run_config(iterations_per_loop):
     if FLAGS.mode != 'eval_once':
       tpu_grpc_url = tpu_cluster_resolver.get_master()
       tf.Session.reset(tpu_grpc_url)
-  elif not run_local:
-    raise RuntimeError('Either --tpu_name must be set or --device must be set '
-                       'to "gpu"')
-
+  '''
+  if not run_local:
+    raise RuntimeError('--device must be set to "gpu"')
 
   if run_local:
     # if FLAGS.mode != 'train':
@@ -215,7 +218,8 @@ def construct_run_config(iterations_per_loop):
     session_config = tf.ConfigProto(allow_soft_placement=True)
 
     # TODO(taylorrobie): Multi GPU
-    train_distribute = tf.contrib.distribute.OneDeviceStrategy("device:GPU:0")
+    train_distribute = tf.contrib.distribute.OneDeviceStrategy("device:GPU:1")
+    # train_distribute = tf.contrib.distribute.MirroredStrategy(num_gpus=4)
 
     return tf.estimator.RunConfig(
         keep_checkpoint_max=FLAGS.keep_checkpoint_max,
@@ -353,8 +357,8 @@ def main(argv):
       mlperf_log.ssd_print(key=mlperf_log.TRAIN_LOOP)
       mlperf_log.ssd_print(key=mlperf_log.TRAIN_EPOCH, value=0)
       hooks = []
-      if FLAGS.use_async_checkpoint:
-        raise NotImplementedError('AsyncCheckpointSaverHook not implemented')
+      # if FLAGS.use_async_checkpoint:
+      #   raise NotImplementedError('AsyncCheckpointSaverHook not implemented')
         # hooks.append(
         #     async_checkpoint.AsyncCheckpointSaverHook(
         #         checkpoint_dir=FLAGS.model_dir,

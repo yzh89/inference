@@ -221,9 +221,9 @@ def update_learning_rate_schedule_parameters(params):
       first_lr_drop_epoch, and second_lr_drop_epoch.
   """
   # params['batch_size'] is per-shard within model_fn if use_tpu=true.
-  batch_size = (
-      params['batch_size'] * params['num_shards']
-      if params['use_tpu'] else params['batch_size'])
+  batch_size = params['batch_size']
+  # batch_size = (params['batch_size'] * params['num_shards']
+  #     if params['use_tpu'] else params['batch_size'])
   # Learning rate is proportional to the batch size
   steps_per_epoch = params['num_examples_per_epoch'] / batch_size
   params['lr_warmup_step'] = int(params['lr_warmup_epoch'] * steps_per_epoch)
@@ -245,8 +245,9 @@ def learning_rate_schedule(params, global_step):
   lr_warmup_step = params['lr_warmup_step']
   first_lr_drop_step = params['first_lr_drop_step']
   second_lr_drop_step = params['second_lr_drop_step']
-  batch_size = (params['batch_size'] * params['num_shards'] if params['use_tpu']
-                else params['batch_size'])
+  batch_size = params['batch_size']
+  # batch_size = (params['batch_size'] * params['num_shards'] if params['use_tpu']
+  #               else params['batch_size'])
   scaling_factor = batch_size / ssd_constants.DEFAULT_BATCH_SIZE
   adjusted_learning_rate = base_learning_rate * scaling_factor
   learning_rate = (tf.cast(global_step, dtype=tf.float32) /
@@ -496,8 +497,8 @@ def default_hparams():
       # TODO(yzh89): HParams update for CPU/CUDA
       use_bfloat16=False,
       use_host_call=True,
-      num_examples_per_epoch=800,
-      lr_warmup_epoch=1.0,
+      num_examples_per_epoch=100,
+      lr_warmup_epoch=0,
       first_lr_drop_epoch=42.6,
       second_lr_drop_epoch=53.3,
       weight_decay=ssd_constants.WEIGHT_DECAY,
