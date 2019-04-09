@@ -497,7 +497,7 @@ def default_hparams():
       # TODO(yzh89): HParams update for CPU/CUDA
       use_bfloat16=False,
       use_host_call=True,
-      num_examples_per_epoch=100,
+      # num_examples_per_epoch=100,
       lr_warmup_epoch=0,
       first_lr_drop_epoch=42.6,
       second_lr_drop_epoch=53.3,

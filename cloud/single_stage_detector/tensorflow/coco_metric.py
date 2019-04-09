@@ -120,9 +120,9 @@ def calc_iou(target, candidates):
 
   intersect = delta[:,0] * delta[:,1]
 
-  delta1 = target_tiled[:,2:] - candidates[:,:2]
+  delta1 = target_tiled[:,2:] - target_tiled[:,:2]
   area1 = delta1[:,0] * delta1[:,1]
-  delta2 = target_tiled[:,2:] - candidates[:,:2]
+  delta2 = candidates[:,2:] - candidates[:,:2]
   area2 = delta2[:,0] * delta2[:,1]
 
   iou = intersect/(area1 + area2 - intersect)
